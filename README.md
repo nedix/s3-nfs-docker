@@ -1,7 +1,6 @@
 # rclone-nfs-docker
 
-This Docker image will deploy an NFS server, which uses [rclone](https://github.com/rclone/rclone) to enable remote
-mounting of an S3 bucket.
+This Docker image mounts an S3 bucket as a remote file system using NFS and [rclone](https://github.com/rclone/rclone).
 
 ## Usage
 
