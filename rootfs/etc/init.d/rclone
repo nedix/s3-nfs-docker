@@ -1,0 +1,50 @@
+#!/sbin/openrc-run
+
+PIDFILE=/var/run/rclone.pid
+
+depend() {
+    before nfs
+}
+
+start() {
+    ebegin "Starting rclone"
+
+    . /etc/rclone/.env
+
+    export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
+
+    start-stop-daemon --start --background --pidfile "$PIDFILE" --make-pidfile --exec /usr/bin/rclone -- \
+         mount default:"$S3_BUCKET" /mnt/rclone \
+        --allow-other \
+        --cache-dir=/var/rclone \
+        --config=/etc/rclone/rclone.conf \
+        --transfers=8 \
+        --multi-thread-streams=8 \
+        --s3-upload-concurrency=2 \
+        --s3-chunk-size=32M \
+        --vfs-cache-mode=full \
+        --vfs-cache-max-size=10G \
+        --vfs-cache-max-age=5m
+
+    sleep 5
+
+    exportfs -a
+
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping rclone"
+
+    start-stop-daemon --stop --quiet --pidfile $PIDFILE
+
+    eend $?
+}
+
+status() {
+    if mount | grep -q '/mnt/rclone'; then
+        eend 0
+    else
+        eend 1
+    fi
+}
