@@ -8,6 +8,7 @@ COPY --from=rclone /usr/local/bin/rclone /usr/bin/rclone
 
 RUN apk add \
         fuse \
+        inotify-tools \
         nfs-utils \
         nfs-utils-doc \
         nfs-utils-openrc \
@@ -16,7 +17,11 @@ RUN apk add \
 
 ADD rootfs /
 
-RUN chmod +x /entrypoint.sh /etc/init.d/rclone
+RUN chmod +x \
+        /entrypoint.sh \
+        /usr/local/bin/timestamp_updater.sh \
+        /etc/init.d/rclone \
+        /etc/init.d/timestamp_updater
 
 ENTRYPOINT ["/entrypoint.sh"]
 

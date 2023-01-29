@@ -20,6 +20,7 @@ EOF
 
 rc-update add nfs
 rc-update add rclone
+rc-update add timestamp_updater
 
 touch /run/openrc/softlevel
 
