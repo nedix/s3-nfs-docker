@@ -3,7 +3,8 @@
 PIDFILE=/var/run/rclone.pid
 
 depend() {
-    before rpcbind
+    before nfs
+    provide portmap rpc.statd
 }
 
 start() {
