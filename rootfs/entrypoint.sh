@@ -6,16 +6,16 @@ mkdir -p \
     /run/openrc
 
 cat << EOF > /etc/rclone/.env
-RCLONE_S3_BUCKET="$RCLONE_S3_BUCKET"
+S3_NFS_BUCKET="$S3_NFS_BUCKET"
 EOF
 
 cat << EOF > /etc/rclone/rclone.conf
 [default]
 type = s3
 provider = Other
-access_key_id = $RCLONE_S3_ACCESS_KEY_ID
-secret_access_key = $RCLONE_S3_SECRET_ACCESS_KEY
-endpoint = $RCLONE_S3_ENDPOINT
+access_key_id = $S3_NFS_ACCESS_KEY_ID
+secret_access_key = $S3_NFS_SECRET_ACCESS_KEY
+endpoint = $S3_NFS_ENDPOINT
 EOF
 
 rc-update add nfs

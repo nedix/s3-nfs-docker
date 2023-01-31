@@ -13,7 +13,7 @@ start() {
     . /etc/rclone/.env
 
     start-stop-daemon --start --background --pidfile "$PIDFILE" --make-pidfile --exec /usr/bin/rclone -- \
-         mount default:"$RCLONE_S3_BUCKET" /mnt/rclone \
+         mount default:"$S3_NFS_BUCKET" /mnt/rclone \
         --allow-other \
         --cache-dir=/var/rclone \
         --config=/etc/rclone/rclone.conf \
