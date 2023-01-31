@@ -1,4 +1,4 @@
-# rclone-nfs-docker
+# s3-nfs-docker
 
 This Docker image mounts an S3 bucket as a remote file system using NFS and [rclone](https://github.com/rclone/rclone).
 
@@ -9,12 +9,12 @@ This Docker image mounts an S3 bucket as a remote file system using NFS and [rcl
 **Start the NFS server on port 2049**
 
 ```shell
-docker run --rm -it --cap-add SYS_ADMIN --device /dev/fuse -p 2049:2049 --name rclone-nfs \
-    -e RCLONE_ENDPOINT=foo \
-    -e RCLONE_BUCKET=bar \
-    -e RCLONE_ACCESS_KEY_ID=baz \
-    -e RCLONE_SECRET_ACCESS_KEY=qux \
-     ghcr.io/nedix/rclone-nfs-docker
+docker run --rm -it --cap-add SYS_ADMIN --device /dev/fuse -p 2049:2049 --name s3-nfs \
+    -e RCLONE_S3_ENDPOINT=foo \
+    -e RCLONE_S3_BUCKET=bar \
+    -e RCLONE_S3_ACCESS_KEY_ID=baz \
+    -e RCLONE_S3_SECRET_ACCESS_KEY=qux \
+     ghcr.io/nedix/s3-nfs-docker
 ```
 
 **Mount on rclone directory (outside container)**
@@ -31,16 +31,16 @@ version: "3.8"
 
 services:
   rclone:
-    image: ghcr.io/nedix/rclone-nfs-docker
+    image: ghcr.io/nedix/s3-nfs-docker
     cap_add:
       - SYS_ADMIN
     devices:
       - /dev/fuse:/dev/fuse:rwm
     environment:
-      RCLONE_ENDPOINT: foo
-      RCLONE_BUCKET: bar
-      RCLONE_ACCESS_KEY_ID: baz
-      RCLONE_SECRET_ACCESS_KEY: qux
+      RCLONE_S3_ENDPOINT: foo
+      RCLONE_S3_BUCKET: bar
+      RCLONE_S3_ACCESS_KEY_ID: baz
+      RCLONE_S3_SECRET_ACCESS_KEY: qux
     ports:
       - '2049:2049'
 
