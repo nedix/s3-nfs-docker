@@ -9,7 +9,7 @@ This Docker image mounts an S3 bucket as a remote file system using NFS and [rcl
 **Start the NFS server on port 2049**
 
 ```shell
-docker run --rm -it --cap-add SYS_ADMIN --device /dev/fuse -p 2049:2049 --name s3-nfs \
+docker run --rm -it --cap-add SYS_ADMIN --device /dev/fuse -p 1234:2049 --name s3-nfs \
     -e S3_NFS_ENDPOINT=foo \
     -e S3_NFS_BUCKET=bar \
     -e S3_NFS_ACCESS_KEY_ID=baz \
@@ -17,11 +17,11 @@ docker run --rm -it --cap-add SYS_ADMIN --device /dev/fuse -p 2049:2049 --name s
     ghcr.io/nedix/s3-nfs-docker
 ```
 
-**Mount on rclone directory (outside container)**
+**Mount outside container**
 
 ```shell
-mkdir rclone \
-&& mount -v -o vers=4 127.0.0.1:/ ./rclone
+mkdir s3-nfs \
+&& mount -v -o vers=4 -o port=1234 127.0.0.1:/ ./s3-nfs
 ```
 
 ### As a Docker Compose volume provisioner
@@ -42,7 +42,7 @@ services:
       S3_NFS_ACCESS_KEY_ID: baz
       S3_NFS_SECRET_ACCESS_KEY: qux
     ports:
-      - '2049:2049'
+      - '1234:2049'
 
   your-service:
     image: foo
@@ -56,7 +56,7 @@ volumes:
   s3-nfs:
     driver_opts:
       type: 'nfs'
-      o: 'vers=4,addr=127.0.0.1,port=2049,rw'
+      o: 'vers=4,addr=127.0.0.1,port=1234,rw'
       device: ':/'
 ```
 
