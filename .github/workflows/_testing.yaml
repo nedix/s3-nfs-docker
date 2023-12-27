@@ -20,4 +20,5 @@ jobs:
       - name: Build image and run tests
         shell: bash
         run: |
+          docker build . -t s3-nfs
           ./tests/e2e/index.sh
