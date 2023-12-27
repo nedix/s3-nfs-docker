@@ -41,7 +41,6 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          target: ${{ matrix.target }}
           tags: |
             ${{ format('ghcr.io/{0}:{1}', github.repository, steps.tags.outputs.DIGEST) }}
             ${{ format('ghcr.io/{0}:{1}', github.repository, steps.tags.outputs.REF_NAME) }}

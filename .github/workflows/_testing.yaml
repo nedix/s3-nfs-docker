@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  integration:
+  e2e:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,4 +20,4 @@ jobs:
       - name: Build image and run tests
         shell: bash
         run: |
-          ./tests/integration/index.sh
+          ./tests/e2e/index.sh
