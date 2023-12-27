@@ -1,0 +1,23 @@
+{
+  baseBranches: [
+    "main",
+    "/^release\\/.*/",
+  ],
+  enabledManagers: [
+    "regex",
+  ],
+  regexManagers: [
+    {
+      fileMatch: ["^Dockerfile$"],
+      matchStrings: ["ARG ALPINE_VERSION=(?<currentValue>.*?)\\n"],
+      datasourceTemplate: "docker",
+      depNameTemplate: "alpine",
+    },
+    {
+      fileMatch: ["^Dockerfile$"],
+      matchStrings: ["ARG RCLONE_VERSION=(?<currentValue>.*?)\\n"],
+      datasourceTemplate: "docker",
+      depNameTemplate: "rclone/rclone",
+    }
+  ]
+}

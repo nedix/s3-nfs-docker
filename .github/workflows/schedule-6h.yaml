@@ -1,0 +1,10 @@
+name: 6 hourly schedule
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+
+jobs:
+  renovate:
+    uses: ./.github/workflows/_renovate.yaml
+    secrets: inherit

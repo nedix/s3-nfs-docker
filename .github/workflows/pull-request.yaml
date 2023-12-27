@@ -1,0 +1,40 @@
+name: Pull requests
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - synchronize
+  merge_group:
+
+jobs:
+  testing:
+    uses: ./.github/workflows/_testing.yaml
+
+  dispatch-renovate:
+    runs-on: ubuntu-latest
+    needs:
+      - testing
+    steps:
+      - name: Extract ref
+        id: extract-ref
+        run: echo "ref=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.extract-ref.outputs.ref }}
+
+      - name: Generate Renovate app token
+        id: renovate-app-token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.RENOVATE_APP_ID }}
+          private_key: ${{ secrets.RENOVATE_APP_PEM }}
+          repositories: ${{ toJSON(github.repository) }}
+
+      - name: Dispatch Renovate workflow
+        run: gh workflow run _renovate.yaml -f RENOVATE_BRANCH_NAME=${{ steps.extract-ref.outputs.ref }}
+        env:
+          GITHUB_TOKEN: ${{ steps.renovate-app-token.outputs.token }}
