@@ -19,5 +19,12 @@
       datasourceTemplate: "docker",
       depNameTemplate: "rclone/rclone",
     }
-  ]
+  ],
+  packageRules: [
+    {
+      description: "Disable grouping for regex managed dependencies",
+      matchDepTypes: ["regex"],
+      groupName: null
+    }
+  ],
 }
