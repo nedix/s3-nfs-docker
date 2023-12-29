@@ -1,15 +1,17 @@
 # s3-nfs-docker
 
-This Docker image mounts an S3 bucket as a remote file system using NFS and [rclone](https://github.com/rclone/rclone).
+Mount an S3 bucket as an NFS filesystem, which can be used as a Docker or Docker Compose volume.
 
 ## Usage
 
-### Standalone
+#### Start the NFS server
 
-**Start the NFS server on port 2049**
+This example command starts an NFS server on localhost port `2049`.
 
 ```shell
-docker run --rm -it --cap-add SYS_ADMIN --device /dev/fuse -p 1234:2049 --name s3-nfs \
+docker run --pull always --rm -it --name s3-nfs \
+    --cap-add SYS_ADMIN --device /dev/fuse \ # fuse priviliges, these might not be necessary in the future \
+    -p 2049:2049 \
     -e S3_NFS_ENDPOINT=foo \
     -e S3_NFS_BUCKET=bar \
     -e S3_NFS_ACCESS_KEY_ID=baz \
@@ -17,18 +19,25 @@ docker run --rm -it --cap-add SYS_ADMIN --device /dev/fuse -p 1234:2049 --name s
     ghcr.io/nedix/s3-nfs-docker
 ```
 
-**Mount outside container**
+#### (Optional) Mount on a path outside the container
+
+This example command mounts an NFS filesystem on a directory named `s3-nfs`.
 
 ```shell
 mkdir s3-nfs \
-&& mount -v -o vers=4 -o port=1234 127.0.0.1:/ ./s3-nfs
+&& mount -v -o vers=4 -o port=2049 127.0.0.1:/ ./s3-nfs
 ```
 
-### As a Docker Compose volume provisioner
+#### (Optional) Use as a Docker Compose volume
+
+This example Docker Compose manifest will start an s3-nfs service on localhost port `2049`.
+It will then make the NFS filesystem available to other services by making it available as a volume.
+The `service_healthy` condition ensures that a connection to the S3 bucket was established before the other service can start using it.
+Multiple services can use the same volume.
+
+*docker-compose.yml*
 
 ```yaml
-version: "3.8"
-
 services:
   s3-nfs:
     image: ghcr.io/nedix/s3-nfs-docker
@@ -42,7 +51,7 @@ services:
       S3_NFS_ACCESS_KEY_ID: baz
       S3_NFS_SECRET_ACCESS_KEY: qux
     ports:
-      - '1234:2049'
+      - '2049:2049'
 
   your-service:
     image: foo
@@ -56,13 +65,14 @@ volumes:
   s3-nfs:
     driver_opts:
       type: 'nfs'
-      o: 'vers=4,addr=127.0.0.1,port=1234,rw'
+      o: 'vers=4,addr=127.0.0.1,port=2049,rw'
       device: ':/'
 ```
 
-## Development
+<hr>
 
-1. Clone this repo
-2. Copy the .env.example file to .env and configure
-3. Execute the `make setup` command
-4. Execute the `make up` command
+## Attribution
+
+Powered by [rclone].
+
+[rclone]: https://github.com/rclone/rclone
