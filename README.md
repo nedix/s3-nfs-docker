@@ -9,13 +9,15 @@ Mount an S3 bucket as an NFS filesystem, which can be used as a Docker or Docker
 This example command starts an NFS server on localhost port `2049`.
 
 ```shell
-docker run --pull always --rm -it --name s3-nfs \
-    --cap-add SYS_ADMIN --device /dev/fuse \ # fuse priviliges, these might not be necessary in the future \
+docker run --pull always --name s3-nfs \
+    --cap-add SYS_ADMIN --device /dev/fuse \ # fuse priviliges, these might not be necessary in the future
     -p 2049:2049 \
     -e S3_NFS_ENDPOINT=foo \
     -e S3_NFS_BUCKET=bar \
     -e S3_NFS_ACCESS_KEY_ID=baz \
     -e S3_NFS_SECRET_ACCESS_KEY=qux \
+    -d \
+    --restart unless-stopped \
     ghcr.io/nedix/s3-nfs-docker
 ```
 
