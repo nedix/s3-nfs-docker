@@ -13,21 +13,17 @@ start() {
     . /etc/rclone/.env
 
     start-stop-daemon --start --background --pidfile "$PIDFILE" --make-pidfile --exec /usr/bin/rclone -- \
-         mount default:"$S3_NFS_BUCKET" /mnt/rclone \
-        --allow-other \
-        --cache-dir=/var/rclone \
-        --config=/etc/rclone/rclone.conf \
-        --transfers=8 \
-        --multi-thread-streams=8 \
-        --s3-upload-concurrency=2 \
-        --s3-chunk-size=32M \
-        --vfs-cache-mode=full \
-        --vfs-cache-max-size=10G \
-        --vfs-cache-max-age=5m
+        mount default:"$S3_NFS_BUCKET" /mnt/rclone \
+            --allow-other \
+            --cache-dir=/var/rclone \
+            --config=/etc/rclone/rclone.conf \
+            --disable=ListR \
+            --transfers=64 \
+            --use-server-modtime \
+            --vfs-cache-mode=writes \
+            --vfs-fast-fingerprint
 
     sleep 5
-
-    exportfs -a
 
     eend $?
 }
