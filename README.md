@@ -13,9 +13,10 @@ docker run --pull always --name s3-nfs \
     --cap-add SYS_ADMIN --device /dev/fuse \ # fuse priviliges, these might not be necessary in the future
     -p 2049:2049 \
     -e S3_NFS_ENDPOINT=foo \
-    -e S3_NFS_BUCKET=bar \
-    -e S3_NFS_ACCESS_KEY_ID=baz \
-    -e S3_NFS_SECRET_ACCESS_KEY=qux \
+    -e S3_NFS_REGION=bar \
+    -e S3_NFS_BUCKET=baz \
+    -e S3_NFS_ACCESS_KEY_ID=qux \
+    -e S3_NFS_SECRET_ACCESS_KEY=quux \
     -d \
     --restart unless-stopped \
     ghcr.io/nedix/s3-nfs-docker
@@ -49,9 +50,10 @@ services:
       - /dev/fuse:/dev/fuse:rwm
     environment:
       S3_NFS_ENDPOINT: foo
-      S3_NFS_BUCKET: bar
-      S3_NFS_ACCESS_KEY_ID: baz
-      S3_NFS_SECRET_ACCESS_KEY: qux
+      S3_NFS_REGION: bar
+      S3_NFS_BUCKET: baz
+      S3_NFS_ACCESS_KEY_ID: qux
+      S3_NFS_SECRET_ACCESS_KEY: quux
     ports:
       - '2049:2049'
 

@@ -16,6 +16,7 @@ provider = Other
 access_key_id = $S3_NFS_ACCESS_KEY_ID
 secret_access_key = $S3_NFS_SECRET_ACCESS_KEY
 endpoint = $S3_NFS_ENDPOINT
+region = $S3_NFS_REGION
 EOF
 
 rc-update add nfs
