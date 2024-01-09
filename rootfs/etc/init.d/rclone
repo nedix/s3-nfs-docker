@@ -21,6 +21,7 @@ start() {
             --transfers=64 \
             --use-server-modtime \
             --vfs-cache-mode=writes \
+            --vfs-cache-max-size=0 \
             --vfs-fast-fingerprint
 
     sleep 5
