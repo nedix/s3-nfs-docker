@@ -55,8 +55,10 @@ services:
       S3_NFS_BUCKET: baz
       S3_NFS_ACCESS_KEY_ID: qux
       S3_NFS_SECRET_ACCESS_KEY: quux
+    volumes:
+      - /sys/fs/cgroup/s3-nfs:/sys/fs/cgroup:rw
     ports:
-      - '2049:2049'
+      - 2049:2049
 
   your-service:
     image: foo
@@ -64,7 +66,7 @@ services:
       s3-nfs:
         condition: service_healthy
     volumes:
-      - 's3-nfs:/mnt/nfs'
+      - s3-nfs:/mnt/nfs
 
 volumes:
   s3-nfs:
