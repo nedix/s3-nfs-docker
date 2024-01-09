@@ -8,10 +8,9 @@ FROM --platform=$BUILDPLATFORM alpine:${ALPINE_VERSION}
 COPY --from=rclone /usr/local/bin/rclone /usr/bin/rclone
 
 RUN apk add \
-        fuse \
+        fuse3 \
         inotify-tools \
         nfs-utils \
-        nfs-utils-doc \
         nfs-utils-openrc \
         openrc \
         psmisc
