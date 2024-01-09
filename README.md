@@ -11,6 +11,7 @@ This example command starts an NFS server on localhost port `2049`.
 ```shell
 docker run --pull always --name s3-nfs \
     --cap-add SYS_ADMIN --device /dev/fuse \ # fuse priviliges, these might not be necessary in the future
+    -v /sys/fs/cgroup/s3-nfs:/sys/fs/cgroup:rw \ # support v2 cgroups
     -p 2049:2049 \
     -e S3_NFS_ENDPOINT=foo \
     -e S3_NFS_REGION=bar \
