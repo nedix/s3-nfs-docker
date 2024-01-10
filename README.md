@@ -45,28 +45,27 @@ Multiple services can use the same volume.
 services:
   s3-nfs:
     image: ghcr.io/nedix/s3-nfs-docker
-    cap_add:
-      - SYS_ADMIN
+    privileged: true
     devices:
       - /dev/fuse:/dev/fuse:rwm
     environment:
-      S3_NFS_ENDPOINT: foo
-      S3_NFS_REGION: bar
-      S3_NFS_BUCKET: baz
-      S3_NFS_ACCESS_KEY_ID: qux
-      S3_NFS_SECRET_ACCESS_KEY: quux
-    volumes:
-      - /sys/fs/cgroup/s3-nfs:/sys/fs/cgroup:rw
+      S3_NFS_ENDPOINT: ${S3_NFS_ENDPOINT:-foo}
+      S3_NFS_REGION: ${S3_NFS_REGION:-bar}
+      S3_NFS_BUCKET: ${S3_NFS_BUCKET:-baz}
+      S3_NFS_ACCESS_KEY_ID: ${S3_NFS_ACCESS_KEY_ID:-qux}
+      S3_NFS_SECRET_ACCESS_KEY: ${S3_NFS_SECRET_ACCESS_KEY:-quux}
     ports:
       - 2049:2049
+    volumes:
+      - /sys/fs/cgroup/s3-nfs:/sys/fs/cgroup
 
   your-service:
     image: foo
+    volumes:
+      - s3-nfs:/mnt/s3-nfs
     depends_on:
       s3-nfs:
         condition: service_healthy
-    volumes:
-      - s3-nfs:/mnt/nfs
 
 volumes:
   s3-nfs:
