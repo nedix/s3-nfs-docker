@@ -1,6 +1,6 @@
 # s3-nfs-docker
 
-Mount an S3 bucket as an NFS filesystem, which can be used as a Docker or Docker Compose volume.
+Mount an S3 bucket as an NFS filesystem that can be used as a Docker or Docker Compose volume.
 
 ## Usage
 
