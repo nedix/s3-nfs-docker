@@ -4,27 +4,30 @@
     "/^release\\/.*/",
   ],
   enabledManagers: [
-    "regex",
+    "custom.regex",
+    "github-actions",
   ],
-  regexManagers: [
+  customManagers: [
     {
+      depNameTemplate: "Alpine",
       fileMatch: ["^Dockerfile$"],
       matchStrings: ["ARG ALPINE_VERSION=(?<currentValue>.*?)\\n"],
       datasourceTemplate: "docker",
-      depNameTemplate: "alpine",
+      packageNameTemplate: "alpine",
     },
     {
+      depNameTemplate: "Rclone",
       fileMatch: ["^Dockerfile$"],
       matchStrings: ["ARG RCLONE_VERSION=(?<currentValue>.*?)\\n"],
       datasourceTemplate: "docker",
-      depNameTemplate: "rclone/rclone",
-    }
+      packageNameTemplate: "rclone/rclone",
+    },
   ],
   packageRules: [
     {
-      description: "Disable grouping for regex managed dependencies",
-      matchDepTypes: ["regex"],
-      groupName: null
-    }
+      description: "Disable grouping for all dependencies",
+      matchPackagePatterns: [".*"],
+      groupName: null,
+    },
   ],
 }
