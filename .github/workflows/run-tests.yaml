@@ -23,6 +23,8 @@ jobs:
           ref: ${{ inputs.ref || steps.extract-ref.outputs.ref }}
 
       - name: Build image and run tests
-        shell: bash
+        shell: sh
         run: |
-          exit 0
+          set -e
+          docker build . -t test
+          ./tests/e2e/index.sh
