@@ -1,13 +1,9 @@
 name: Renovate dependencies
 
 on:
-  workflow_call:
+  schedule:
+    - cron: '0 */6 * * *'
   workflow_dispatch:
-    inputs:
-      RENOVATE_BRANCH_NAME:
-        description: Branch name passed to Renovate
-        type: string
-        required: false
 
 jobs:
   renovate:
@@ -31,12 +27,8 @@ jobs:
           private_key: ${{ secrets.RENOVATE_APP_PEM }}
           repositories: ${{ toJSON(github.repository) }}
 
-      - name: Prepare Renovate env
-        if: inputs.RENOVATE_BRANCH_NAME
-        run: echo "RENOVATE_BRANCH_NAME=${{ inputs.RENOVATE_BRANCH_NAME }}" >> $GITHUB_ENV
-
-      - name: Renovate
-        uses: renovatebot/github-action@v39.0.5
+      - name: Renovate dependencies
+        uses: renovatebot/github-action@v40.1.12
         with:
           token: ${{ steps.renovate-app-token.outputs.token }}
         env:

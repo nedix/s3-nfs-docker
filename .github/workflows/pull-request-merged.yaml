@@ -1,17 +1,22 @@
 name: Pull request merged
 
 on:
+  merge_group:
   pull_request_target:
-    types:
-      - closed
     branches:
       - main
-  merge_group:
+    types:
+      - closed
+  workflow_call:
+    inputs:
+      workflow_call:
+        type: boolean
+        default: true
 
 jobs:
   bump-version:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true || inputs.workflow_call == true
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,13 +24,13 @@ jobs:
           ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
 
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.67.0
+      - name: Bump version
+        uses: anothrNick/github-tag-action@1.69.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           WITH_V: true
 
-  build-and-push:
-    uses: ./.github/workflows/_build-and-push.yaml
+  update-package:
     needs:
       - bump-version
+    uses: ./.github/workflows/update-package.yaml
