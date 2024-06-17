@@ -53,7 +53,7 @@ jobs:
           echo "REF_NAME=$(git tag --points-at HEAD)" >> $GITHUB_OUTPUT
 
       - name: Update package
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           platforms: linux/amd64,linux/arm64/v8
