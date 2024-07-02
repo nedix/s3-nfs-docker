@@ -28,7 +28,7 @@ jobs:
           repositories: ${{ toJSON(github.repository) }}
 
       - name: Renovate dependencies
-        uses: renovatebot/github-action@v40.1.12
+        uses: renovatebot/github-action@v40.2.0
         with:
           token: ${{ steps.renovate-app-token.outputs.token }}
         env:
