@@ -1,4 +1,4 @@
-# s3-nfs-docker
+# s3-nfs-container
 
 Container to mount an S3 bucket as an NFS filesystem so that it can be used as a Docker or Docker Compose volume.
 
