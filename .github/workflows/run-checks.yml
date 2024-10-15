@@ -4,7 +4,6 @@ on:
   merge_group:
   pull_request_target:
     branches: ['main']
-    paths-ignore: ['.github/**/*']
     types: ['opened', 'reopened', 'synchronize']
   workflow_dispatch:
 
