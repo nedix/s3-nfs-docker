@@ -1,0 +1,23 @@
+name: Update dependencies
+
+on:
+  merge_group:
+  pull_request_target:
+    branches: ['main']
+    paths-ignore: ['.github/**/*']
+    types: ['closed']
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-dependencies:
+    name: Update dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - id: update-dependencies
+        name: Update dependencies
+        uses: nedix/actions/update-dependencies@v0.6.1
+        with:
+          app_id: ${{ secrets.RENOVATE_APP_ID }}
+          app_pem: ${{ secrets.RENOVATE_APP_PEM }}

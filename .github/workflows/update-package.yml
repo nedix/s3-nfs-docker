@@ -1,0 +1,20 @@
+name: Update package
+
+on:
+  push:
+    tags: ['*']
+
+jobs:
+  update-package:
+    name: Update package
+    runs-on: ubuntu-latest
+    steps:
+      - id: update-package
+        name: Update package
+        uses: nedix/actions/update-package@v0.6.1
+        with:
+          platforms: linux/amd64,linux/arm64/v8
+          registry: ghcr.io
+          registry_path: ${{ github.repository }}
+          registry_username: ${{ github.actor }}
+          registry_password: ${{ secrets.GITHUB_TOKEN }}

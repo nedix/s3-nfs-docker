@@ -1,0 +1,20 @@
+name: Run checks
+
+on:
+  merge_group:
+  pull_request_target:
+    branches: ['main']
+    paths-ignore: ['.github/**/*']
+    types: ['opened', 'reopened', 'synchronize']
+  workflow_dispatch:
+
+jobs:
+  run-checks:
+    name: Run checks
+    runs-on: ubuntu-latest
+    steps:
+      - id: run-checks
+        name: Run checks
+        uses: nedix/actions/run-checks@v0.6.1
+        with:
+          command: ./tests/index.sh
