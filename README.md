@@ -20,7 +20,7 @@ docker run --pull always --name s3-nfs \
     -e S3_NFS_SECRET_ACCESS_KEY=quux \
     -d \
     --restart unless-stopped \
-    ghcr.io/nedix/s3-nfs-docker
+    ghcr.io/nedix/s3-nfs-container
 ```
 
 #### (Optional) Mount on a path outside the container
@@ -44,7 +44,7 @@ Multiple services can use the same volume.
 ```yaml
 services:
   s3-nfs:
-    image: ghcr.io/nedix/s3-nfs-docker
+    image: ghcr.io/nedix/s3-nfs-container
     privileged: true
     devices:
       - /dev/fuse:/dev/fuse:rwm
