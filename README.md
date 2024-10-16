@@ -23,7 +23,7 @@ docker run --pull always --name s3-nfs \
     nedix/s3-nfs
 ```
 
-#### (Optional) Mount on a path outside the container
+#### (Option 1.) Mount on a path outside the container
 
 This example command mounts an NFS filesystem on a directory named `s3-nfs`.
 
@@ -32,47 +32,17 @@ mkdir s3-nfs \
 && mount -v -o vers=4 -o port=2049 127.0.0.1:/ ./s3-nfs
 ```
 
-#### (Optional) Use as a Docker Compose volume
+#### (Option 2.) Use as a Docker Compose volume
 
-This example Docker Compose manifest will start an s3-nfs service on localhost port `2049`.
-It will then make the NFS filesystem available to other services by making it available as a volume.
-The `service_healthy` condition ensures that a connection to the S3 bucket was established before the other service can start using it.
+The example Compose manifest will start the s3-nfs service on localhost port `2049`.
+It will then make the NFS filesystem available to other services by configuring it as a volume.
+The `service_healthy` condition ensures that a connection to an S3 bucket has been established before the other service can start using it.
 Multiple services can use the same volume.
 
-*docker-compose.yml*
-
-```yaml
-services:
-  s3-nfs:
-    image: nedix/s3-nfs
-    privileged: true
-    devices:
-      - /dev/fuse:/dev/fuse:rwm
-    environment:
-      S3_NFS_ENDPOINT: ${S3_NFS_ENDPOINT:-foo}
-      S3_NFS_REGION: ${S3_NFS_REGION:-bar}
-      S3_NFS_BUCKET: ${S3_NFS_BUCKET:-baz}
-      S3_NFS_ACCESS_KEY_ID: ${S3_NFS_ACCESS_KEY_ID:-qux}
-      S3_NFS_SECRET_ACCESS_KEY: ${S3_NFS_SECRET_ACCESS_KEY:-quux}
-    ports:
-      - 2049:2049
-    volumes:
-      - /sys/fs/cgroup/s3-nfs:/sys/fs/cgroup
-
-  your-service:
-    image: foo
-    volumes:
-      - s3-nfs:/mnt/s3-nfs
-    depends_on:
-      s3-nfs:
-        condition: service_healthy
-
-volumes:
-  s3-nfs:
-    driver_opts:
-      type: 'nfs'
-      o: 'vers=4,addr=127.0.0.1,port=2049,rw'
-      device: ':/'
+```shell
+wget -q https://raw.githubusercontent.com/nedix/s3-nfs-container/main/docs/examples/compose.yml
+docker compose up -d
+docker compose exec example-service ls /data
 ```
 
 <hr>

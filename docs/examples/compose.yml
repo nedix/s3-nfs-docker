@@ -1,0 +1,29 @@
+services:
+  s3-nfs:
+    image: nedix/s3-nfs
+    privileged: true
+    devices:
+      - /dev/fuse:/dev/fuse:rwm
+    environment:
+      S3_NFS_ENDPOINT: ${S3_NFS_ENDPOINT:-foo}
+      S3_NFS_REGION: ${S3_NFS_REGION:-bar}
+      S3_NFS_BUCKET: ${S3_NFS_BUCKET:-baz}
+      S3_NFS_ACCESS_KEY_ID: ${S3_NFS_ACCESS_KEY_ID:-qux}
+      S3_NFS_SECRET_ACCESS_KEY: ${S3_NFS_SECRET_ACCESS_KEY:-quux}
+    ports:
+      - 127.0.0.1:2049:2049
+
+  example-service:
+    image: busybox
+    volumes:
+      - s3-nfs:/data
+    depends_on:
+      s3-nfs:
+        condition: service_healthy
+
+volumes:
+  s3-nfs:
+    driver_opts:
+      type: 'nfs'
+      o: 'vers=4,addr=127.0.0.1,port=2049,rw'
+      device: ':/'
