@@ -5,14 +5,14 @@
   customManagers: [
     {
       depNameTemplate: "Alpine",
-      fileMatch: ["^Dockerfile$"],
+      fileMatch: ["^Containerfile$"],
       matchStrings: ["ARG ALPINE_VERSION=(?<currentValue>.*?)\\n"],
       datasourceTemplate: "docker",
       packageNameTemplate: "alpine",
     },
     {
       depNameTemplate: "Rclone",
-      fileMatch: ["^Dockerfile$"],
+      fileMatch: ["^Containerfile$"],
       matchStrings: ["ARG RCLONE_VERSION=(?<currentValue>.*?)\\n"],
       datasourceTemplate: "docker",
       packageNameTemplate: "rclone/rclone",

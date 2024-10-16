@@ -1,14 +1,14 @@
 setup:
-	@docker build . -t s3-nfs
+	@docker build --progress=plain -f Containerfile -t s3-nfs .
 
-up: port = 2049
+up: PORT = 2049
 up:
 	@docker run --rm --name s3-nfs \
         --cap-add SYS_ADMIN \
         --device /dev/fuse \
         -v /sys/fs/cgroup/s3-nfs:/sys/fs/cgroup:rw \
         --env-file .env \
-        -p $(port):2049 \
+        -p $(PORT):2049 \
         -d \
         s3-nfs
 

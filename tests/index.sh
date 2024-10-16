@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-docker build . -t test
+docker build -f Containerfile -t test .
 
 # TODO
