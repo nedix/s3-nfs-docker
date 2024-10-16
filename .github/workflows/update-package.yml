@@ -14,7 +14,7 @@ jobs:
         uses: nedix/actions/update-package@v0.6.1
         with:
           platforms: linux/amd64,linux/arm64/v8
-          registry: ghcr.io
-          registry_path: ${{ github.repository }}
-          registry_username: ${{ github.actor }}
-          registry_password: ${{ secrets.GITHUB_TOKEN }}
+          registry: docker.io
+          registry_path: nedix/s3-nfs
+          registry_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          registry_password: ${{ secrets.DOCKERHUB_PAT }}
