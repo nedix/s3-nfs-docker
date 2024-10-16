@@ -32,7 +32,7 @@ mkdir s3-nfs \
 && mount -v -o vers=4 -o port=2049 127.0.0.1:/ ./s3-nfs
 ```
 
-#### (Option 2.) Use as a Docker Compose volume
+#### (Option 2.) Use as a Compose volume
 
 The example Compose manifest will start the s3-nfs service on localhost port `2049`.
 It will then make the NFS filesystem available to other services by configuring it as a volume.
