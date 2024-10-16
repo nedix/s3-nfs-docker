@@ -1,7 +1,7 @@
 ARG ALPINE_VERSION=3.20
 ARG RCLONE_VERSION=1.68.1
 
-FROM rclone/rclone:${RCLONE_VERSION} as rclone
+FROM rclone/rclone:${RCLONE_VERSION} AS rclone
 
 FROM --platform=$BUILDPLATFORM alpine:${ALPINE_VERSION}
 
