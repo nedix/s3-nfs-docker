@@ -1,6 +1,6 @@
-# s3-nfs-container
+# [s3-nfs-container](https://github.com/nedix/s3-nfs-container)
 
-Container to mount an S3 bucket as an NFS filesystem so that it can be used as a Docker or Docker Compose volume.
+Mount an S3 bucket as an NFS filesystem to use it as a Docker or Docker Compose volume.
 
 ## Usage
 
