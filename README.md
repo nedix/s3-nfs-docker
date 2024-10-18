@@ -38,7 +38,7 @@ This example mounts the S3 bucket to a local directory named `s3-nfs`.
 ```shell
 docker run --pull always --name s3-nfs \
     --cap-add SYS_ADMIN --device /dev/fuse \ # fuse priviliges, these might not be necessary in the future \
-    -p 2049:2049 \
+    -p 127.0.0.1:2049:2049 \
     -e S3_NFS_ENDPOINT=foo \
     -e S3_NFS_REGION=bar \
     -e S3_NFS_BUCKET=baz \
