@@ -1,30 +1,64 @@
 #!/usr/bin/env sh
 
-mkdir -p \
-    /etc/rclone \
-    /mnt/rclone \
-    /run/openrc
+: ${BUFFER_SIZE}
+: ${CACHE_MAX_AGE}
+: ${CACHE_MAX_SIZE}
+: ${CACHE_MIN_FREE_SPACE}
+: ${CACHE_READ_AHEAD:=0}
+: ${CACHE_WRITE_BACK}
+: ${DIR_CACHE_TIME:=10}
+: ${S3_ACCESS_KEY_ID}
+: ${S3_BUCKET}
+: ${S3_ENDPOINT}
+: ${S3_REGION}
+: ${S3_SECRET_ACCESS_KEY}
+: ${STARTUP_TIMEOUT}
 
-cat << EOF > /etc/rclone/.env
-S3_NFS_BUCKET="$S3_NFS_BUCKET"
-EOF
+HOME_DIRECTORY="/${HOME_DIRECTORY#/}"
+HOME_DIRECTORY="${HOME_DIRECTORY%/}"
+ROOT_DIRECTORY="/${ROOT_DIRECTORY#/}"
+ROOT_DIRECTORY="${ROOT_DIRECTORY%/}"
 
-cat << EOF > /etc/rclone/rclone.conf
-[default]
-type = s3
-provider = Other
-access_key_id = $S3_NFS_ACCESS_KEY_ID
-secret_access_key = $S3_NFS_SECRET_ACCESS_KEY
-endpoint = $S3_NFS_ENDPOINT
-region = $S3_NFS_REGION
-EOF
+# -------------------------------------------------------------------------------
+#    Bootstrap rclone services
+# -------------------------------------------------------------------------------
+{
+    # -------------------------------------------------------------------------------
+    #    Create rclone-configure environment
+    # -------------------------------------------------------------------------------
+    mkdir -p /run/rclone-configure/environment
 
-rc-update add nfs
-rc-update add rclone
-rc-update add timestamp_updater
+    echo "$S3_ACCESS_KEY_ID"     > /run/rclone-configure/environment/S3_ACCESS_KEY_ID
+    echo "$S3_BUCKET"            > /run/rclone-configure/environment/S3_BUCKET
+    echo "$S3_ENDPOINT"          > /run/rclone-configure/environment/S3_ENDPOINT
+    echo "$S3_REGION"            > /run/rclone-configure/environment/S3_REGION
+    echo "$S3_SECRET_ACCESS_KEY" > /run/rclone-configure/environment/S3_SECRET_ACCESS_KEY
 
-touch /run/openrc/softlevel
+    # -------------------------------------------------------------------------------
+    #    Create rclone-mount environment
+    # -------------------------------------------------------------------------------
+    mkdir -p /run/rclone-mount/environment
 
-sed -i 's/^tty/#&/' /etc/inittab
+    echo "$BUFFER_SIZE"          > /run/rclone-mount/environment/BUFFER_SIZE
+    echo "$CACHE_MAX_AGE"        > /run/rclone-mount/environment/CACHE_MAX_AGE
+    echo "$CACHE_MAX_SIZE"       > /run/rclone-mount/environment/CACHE_MAX_SIZE
+    echo "$CACHE_MIN_FREE_SPACE" > /run/rclone-mount/environment/CACHE_MIN_FREE_SPACE
+    echo "$CACHE_READ_AHEAD"     > /run/rclone-mount/environment/CACHE_READ_AHEAD
+    echo "$CACHE_WRITE_BACK"     > /run/rclone-mount/environment/CACHE_WRITE_BACK
+    echo "$S3_BUCKET"            > /run/rclone-mount/environment/S3_BUCKET
 
-exec /sbin/init
+    # -------------------------------------------------------------------------------
+    #    Create rclone-refresh environment
+    # -------------------------------------------------------------------------------
+    mkdir -p /run/rclone-refresh/environment
+
+    echo "$DIR_CACHE_TIME" > /run/rclone-refresh/environment/DIR_CACHE_TIME
+}
+
+# -------------------------------------------------------------------------------
+#    Liftoff!
+# -------------------------------------------------------------------------------
+exec env -i \
+    S6_CMD_WAIT_FOR_SERVICES_MAXTIME="$(( $STARTUP_TIMEOUT * 1000 ))" \
+    S6_STAGE2_HOOK=/sbin/s6-stage2-hook \
+    /init

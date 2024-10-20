@@ -13,7 +13,7 @@ up:
         s3-nfs
 
 down:
-	-@docker stop s3-nfs
+	@-docker rm -f s3-nfs
 
 shell:
 	@docker exec -it s3-nfs /bin/sh

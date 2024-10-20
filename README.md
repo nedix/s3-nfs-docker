@@ -1,14 +1,14 @@
 # [s3-nfs-container](https://github.com/nedix/s3-nfs-container)
 
-Mount an S3 bucket as an NFS filesystem to use it as a Docker or Docker Compose volume.
+Mount an S3 bucket as an NFS filesystem so it can be used as a Docker or Docker Compose volume.
 
 ## Usage
 
 ### As a Compose volume
 
-The example Compose manifest will start the s3-nfs service on localhost port `2049`.
+The following Compose manifest will start the s3-nfs service on localhost port `2049`.
 It will then make the NFS filesystem available to other services by configuring it as a volume.
-The `service_healthy` condition ensures that a connection to an S3 bucket has been established before the other service can start using it.
+The `service_healthy` condition ensures that a connection to the bucket is successfully established before the other services will start using it.
 Multiple services can use the same volume.
 
 #### 1. Create the Compose manifest
@@ -23,33 +23,33 @@ wget -q https://raw.githubusercontent.com/nedix/s3-nfs-container/main/docs/examp
 docker compose up -d
 ```
 
-#### 3. Browse the S3 bucket from inside the example service
+#### 3. List the S3 bucket contents from inside the example container
 
 ```shell
-docker compose exec example-service ls /data
+docker compose exec example-container ls /data
 ```
 
 ### As a directory mount
 
-This example mounts the S3 bucket to a local directory named `s3-nfs`.
+The following example mounts a bucket to a local directory named `s3-nfs`.
 
-#### 1. Start the NFS server
+#### 1. Start the service
 
 ```shell
 docker run --pull always --name s3-nfs \
-    --cap-add SYS_ADMIN --device /dev/fuse \ # fuse priviliges, these might not be necessary in the future \
+    --cap-add SYS_ADMIN --device /dev/fuse \ # fuse priviliges, these might change in the future \
     -p 127.0.0.1:2049:2049 \
-    -e S3_NFS_ENDPOINT=foo \
-    -e S3_NFS_REGION=bar \
-    -e S3_NFS_BUCKET=baz \
-    -e S3_NFS_ACCESS_KEY_ID=qux \
-    -e S3_NFS_SECRET_ACCESS_KEY=quux \
+    -e S3_ENDPOINT=foo \
+    -e S3_REGION=bar \
+    -e S3_BUCKET=baz \
+    -e S3_ACCESS_KEY_ID=qux \
+    -e S3_SECRET_ACCESS_KEY=quux \
     -d \
     --restart unless-stopped \
     nedix/s3-nfs
 ```
 
-#### 2. Create a directory for the mount
+#### 2. Create a directory to mount the filesystem to
 
 ```shell
 mkdir s3-nfs
