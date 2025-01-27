@@ -8,9 +8,12 @@ SERVICES_DIRECTORY=/etc/s6-overlay/s6-rc.d
 
 mkdir "$SCRIPTS_DIRECTORY"
 
-for SERVICE_PATH in $(find "$SERVICES_DIRECTORY" -mindepth 2 -maxdepth 2 -type f \( -name up -o -name run \)); do
-    ENVIRONMENT_DIRECTORY=$(echo "$SERVICE_PATH" | sed -E "s|^${SERVICES_DIRECTORY}/([^/]+)/.*|/run/\1/environment|")
-    SCRIPT_PATH=$(echo "$SERVICE_PATH" | sed -E "s|^${SERVICES_DIRECTORY}/([^/]+)/.*|${SCRIPTS_DIRECTORY}/\1|")
+for SERVICE_PATH in $( \
+    find "$SERVICES_DIRECTORY" -mindepth 2 -maxdepth 2 -type f \
+    \( -name up -o -name down -o -name run -o -name finish \) \
+); do
+    ENVIRONMENT_DIRECTORY=$(echo "$SERVICE_PATH" | sed -E "s|^${SERVICES_DIRECTORY}/([^/]+)/([^/]+)|/run/\1/environment|")
+    SCRIPT_PATH=$(echo "$SERVICE_PATH" | sed -E "s|^${SERVICES_DIRECTORY}/([^/]+)/([^/]+)|${SCRIPTS_DIRECTORY}/\1/\2|")
 
     # Symlink container environment to service environment
     mkdir -p "$ENVIRONMENT_DIRECTORY"
@@ -18,10 +21,11 @@ for SERVICE_PATH in $(find "$SERVICES_DIRECTORY" -mindepth 2 -maxdepth 2 -type f
     chmod -R 400 "$ENVIRONMENT_DIRECTORY"
 
     # Move shell script
+    mkdir -p "${SCRIPT_PATH%/*}"
     mv "$SERVICE_PATH" "$SCRIPT_PATH"
     chmod 500 "$SCRIPT_PATH"
 
     # Create execline script
-    echo -e "#!/command/execlineb -P\nexec s6-envdir ${ENVIRONMENT_DIRECTORY} ${SCRIPT_PATH}" > "$SERVICE_PATH"
+    printf "#!/command/execlineb -P\nexec s6-envdir ${ENVIRONMENT_DIRECTORY} ${SCRIPT_PATH}" > "$SERVICE_PATH"
     chmod 400 "$SERVICE_PATH"
 done
